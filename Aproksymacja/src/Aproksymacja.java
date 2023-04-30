@@ -54,27 +54,28 @@ public class Aproksymacja {
         int k=m*2;
         int i = listaPunktow.size();
 
-        double sWyznacznik
+        double sWyznacznik;
 
         double[][] tabSk,tabTk, s, t, sDopalnien, sTransponowana, sOdwrotna;
 
         tabSk= new double[i][(k+1)];
 
-        for(int j=0; j<=i;  j++){
+        for(int j=0; j<i;  j++){
             for(int l=k; l>=0; l--){
 
                 tabSk[j][l] = Math.pow(listaPunktow.get(j).getX(),l);
+                System.out.println("s " +tabSk[j][l]);
 
             }
         }
 
-        tabTk = new double[i][m];
+        tabTk = new double[i][m+1];
 
-        for(int j=0; j<=i;  j++){
-            for(int l=0; l=2; l++){
+        for(int j=0; j<i;  j++){
+            for(int l=m; l>=0; l--){
 
-                tabTk[j][m] = Math.pow(listaPunktow.get(j).getX(),l);
-
+                tabTk[j][l] = tabSk[j][l] *listaPunktow.get(j).getY();
+                System.out.println("t "+tabTk[j][l]);
             }
         }
 
