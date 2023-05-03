@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Program liczący wielomian aproksymacyjny
+ * Z pliku odczytuje punkty i na ich podstawie liczy wielomian aproksymacyjny
+ * Stopien wielomianu aproksymacyjnego jest podawany przez użytkownika
+ *
+ * @version 1.0 2023-05-03
+ * @author Dominik Odo
+ */
 
 public class Aproksymacja {
 
