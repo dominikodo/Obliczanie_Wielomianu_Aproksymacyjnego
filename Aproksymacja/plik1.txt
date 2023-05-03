@@ -1,3 +1,11 @@
+0 1
+2 0,86
+4 0,16
+6 -0,62
+8 -1
+10 -0,5
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -7,7 +15,7 @@ import java.util.Scanner;
 
 public class Aproksymacja {
 
-    private final ArrayList<Punkt> listaPunktow;
+    private ArrayList<Punkt> listaPunktow;
 
     Aproksymacja(){
 
@@ -15,20 +23,24 @@ public class Aproksymacja {
 
     }
 
-    void odczytZPliku (String nazwaPliku){//metoda odczytująca z pliku punkty
+    void odczytZPliku (String nazwaPliku){
 
         File file = new File(nazwaPliku);//tworzenie obiektu file
+        //System.out.println("test");
 
         try {
             Scanner scanner = new Scanner(file);
 
-            while (scanner.hasNextDouble()) {//dopóki są liczby double w pliku
+            while (scanner.hasNextDouble()) {
 
                 Punkt punkt=new Punkt();
+
+                //System.out.println("test");
 
                 punkt.setLocation(scanner.nextDouble(), scanner.nextDouble());
                 listaPunktow.add(punkt);
 
+                //System.out.println("punkt"+ scanner.nextDouble()+","+scanner.nextDouble());
                 System.out.println("punkt: ("+punkt.getX()+","+punkt.getY()+")");
             }
 
@@ -43,7 +55,7 @@ public class Aproksymacja {
         }
         //System.out.println(listaPunktow);
     }
-    void obliczWzor(int m){
+    void obliczWzor(int m){//chwilowo w tym repozytorium bo drugiego nie wypushowałem
 
         int k=m*2;
         int i = listaPunktow.size();
@@ -52,7 +64,7 @@ public class Aproksymacja {
 
         double[] sumaSk, sumaTk, wspolczynniki;
 
-        double[][] tabSk,tabTk, s, sOdwrotna;
+        double[][] tabSk,tabTk, s, sDopelnien, sTransponowana, sOdwrotna;
 
 
 
@@ -121,7 +133,62 @@ public class Aproksymacja {
         }
 
 
-        sOdwrotna = obliczMacierzOdwrotna(s);
+        sWyznacznik=obliczWyznacznik(s);
+        System.out.println("\nWyznacznik s: "+sWyznacznik);
+
+
+        sDopelnien = new double[m+1][m+1];
+        System.out.println("\nMacierz sDopelnien:");
+
+        for (int h = 0; h < m+1; h++) {
+            for (int j = 0; j < m+1; j++) {
+                double[][] podmacierz = new double[m][m];
+                int x = 0;
+                for (int n = 0; n < m+1; n++) {
+                    if (n == h) continue;
+                    int y = 0;
+                    for (int l = 0; l < m+1; l++) {
+                        if (l == j) continue;
+                        podmacierz[x][y] = s[n][l];
+                        y++;
+                    }
+                    x++;
+                }
+                sDopelnien[h][j] = Math.pow(-1, h+j) * obliczWyznacznik(podmacierz);
+                System.out.printf("%f ",sDopelnien[h][j]);
+            }
+            System.out.printf("\n");
+        }
+
+        sTransponowana = new double[m+1][m+1];
+        System.out.println("\nMacierz dopelnien transponowana:");
+
+        for(int j=0; j<m+1;  j++){
+            for(int l=0; l<m+1; l++){
+
+                sTransponowana[j][l]= sDopelnien[l][j];
+
+                System.out.printf("%f ",sTransponowana[j][l]);
+
+            }
+            System.out.printf("\n");
+
+        }
+
+        sOdwrotna = new double[m+1][m+1];
+        System.out.println("\nMacierz odwrotna:");
+
+        for(int j=0; j<m+1;  j++){
+            for(int l=0; l<m+1; l++){
+
+                sOdwrotna[j][l]= sTransponowana[j][l]/sWyznacznik;
+
+                System.out.printf("%f ",sOdwrotna[j][l]);
+
+            }
+            System.out.printf("\n");
+
+        }
 
         wspolczynniki = new double[m+1];
 
@@ -199,82 +266,5 @@ public class Aproksymacja {
         return wyznacznik;
     }
 
-    double[][] obliczMacierzDopelnien(double[][] macierz){//metoda obliczajaca macierz dopelnien
 
-        int n = macierz.length;
-        double[][] macierzDopelnien = new double[n][n];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                double[][] podmacierz = new double[n-1][n-1];
-                int x = 0;
-                for (int k = 0; k < n; k++) {
-                    if (k == i) continue;
-                    int y = 0;
-                    for (int l = 0; l < n; l++) {
-                        if (l == j) continue;
-                        podmacierz[x][y] = macierz[k][l];
-                        y++;
-                    }
-                    x++;
-                }
-                macierzDopelnien[i][j] = Math.pow(-1, i+j) * obliczWyznacznik(podmacierz);
-                System.out.printf("%f ",macierzDopelnien[i][j]);
-            }
-            System.out.printf("\n");
-        }
-
-        return macierzDopelnien;
-    }
-
-    double[][] transponujMacierz(double[][] macierz){//metoda transponujaca macierz
-
-        int n = macierz.length;
-        double[][] macierzTransponowana = new double[n][n];
-
-        for(int j=0; j<n;  j++){
-            for(int l=0; l<n; l++){
-
-                macierzTransponowana[j][l]= macierz[l][j];
-
-                System.out.printf("%f ",macierzTransponowana[j][l]);
-
-            }
-            System.out.printf("\n");
-
-        }
-
-        return macierzTransponowana;
-    }
-
-    double[][] obliczMacierzOdwrotna(double[][] macierz) {//metoda obliczajaca macierz odwrotna
-
-        int n = macierz.length;
-        double[][] macierzOdwrotna = new double[n][n];
-
-
-        double wyznacznik = obliczWyznacznik(macierz);
-        System.out.println("\nWyznacznik s: " + wyznacznik);
-
-        System.out.println("\nMacierz dopelnien: ");
-        double[][] macierzDopelnien = obliczMacierzDopelnien(macierz);
-
-        System.out.println("\nMacierz transponowana: ");
-        double[][] macierzTransponowana = transponujMacierz(macierzDopelnien);
-
-        System.out.println("\nMacierz odwrotna: ");
-        for (int j = 0; j < n; j++) {
-            for (int l = 0; l < n; l++) {
-
-                macierzOdwrotna[j][l] = macierzTransponowana[j][l] / wyznacznik;
-
-                System.out.printf("%f ", macierzOdwrotna[j][l]);
-
-            }
-            System.out.printf("\n");
-
-        }
-
-        return macierzOdwrotna;
-    }
 }

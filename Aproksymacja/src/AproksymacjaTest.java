@@ -1,5 +1,13 @@
 import java.util.Scanner;
 
+/**
+ * Program liczący wielomian aproksymacyjny
+ * Z pliku odczytuje punkty i na ich podstawie liczy wielomian aproksymacyjny
+ * Stopien wielomianu aproksymacyjnego jest podawany przez użytkownika
+ *
+ * @version 1.0 2023-05-03
+ * @author Dominik Odo
+ */
 public class AproksymacjaTest {
 
     public static void main(String[] args) {
@@ -27,7 +35,7 @@ public class AproksymacjaTest {
 
             aproksymacja.obliczWzor(m);
 
-            //C:\Users\piese\Desktop\Metody Obliczeniowe\Oblicznie_Wielomianu_Interpolacyjnego\Interpolacja\plik.txt
+            //C:\Users\piese\Desktop\Metody Obliczeniowe\Obliczanie_Wielomianu_Aproksymacyjnego\Aproksymacja\plik.txt
         }
 
     }
